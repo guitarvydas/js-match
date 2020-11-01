@@ -1,0 +1,7 @@
+clear.
+some(foo).
+some(bar).
+some(baz).
+eq(X,X) = true.
+neq(X,Y) = eq(Z) & eq(Y) & cut & false.
+match(some(Z) & some(Y) & neq(X,Y)).
