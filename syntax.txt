@@ -199,9 +199,20 @@ match ([
 ////
 // transpiled to JS
 ////
-fact ("some", "foo");
-fact ("some", "bar");
-fact ("some", "baz");
+var db = List ();
+
+function clear () { db = List (); };
+function pushDB (x) { db = cons (x, db); };
+function lvar (s) { return list("?",s); };
+function fact0 (r) { pushDB (list (list (r))); }
+function fact1 (r,s) { pushDB (list (list (r,s))); }
+function fact2 (r,s,o) { pushDB (list (list (r,s,o))); }
+
+function rule (head, body) {
+	 
+fact1 ("some", "foo");
+fact1 ("some", "bar");
+fact1 ("some", "baz");
 rule (["eq", lvar ("X"), lvar ("X")], []);
 rule (["neq", lvar ("X"), lvar ("Y")], 
      or ( 
