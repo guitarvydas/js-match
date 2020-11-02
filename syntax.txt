@@ -1,0 +1,497 @@
+
+//
+// a factbase pipeline is ~{ ... } -> ~{ ... } ...
+//
+// "~{ ... }" creates a match context
+// "~{ eee ... }" eee is the match, everything else (facts and rules) construct the environment before the match is executed
+//
+// "fact <relation>" creates a nonary fact, e.g. <relation>()
+// "fact <relation> (<subject>)" creates a unary fact, e.g. <relation>(<subject>)
+// "fact <relation> (<subject> <object>)" creates a binary fact, e.g. <relation>(<subject> <object>)
+// "rule header { body }" creates a rule
+//   a header is "<name> ( ... )" which defines the signature of the rule
+//
+// rule body consists of a union logical-factors (separated by "|")
+//  logical-factor are logical-primaries (separated by "&")
+//  logical-primaries are: (1) a fact reference, or (2) a rule call, or (3) a fact creation
+//  a fact reference is "<relation>" 
+//    or a fact reference is "<relation> (<atom>)" 
+//    or a fact reference is "<relation> (<atom> <atom>)" 
+//  a rule call is "@<name>"
+//
+// atoms are:
+//   "X" a capitalized identifier is a logic variable (first letter is capitalized)
+//   "x" a non-capitalized identifier is a symbol
+//   "0..9+" digits form a number
+//
+// legal first characters are "a..z" (for symbols) or "A..Z" (for logical variables)
+// legal follow characters are "A..Z", "a..z", "0..9", "_", "-"
+//
+// example - the first match just creates a factbase and pipes it to the next match
+//
+~{
+  fact begin-x (id0 40) &
+  fact begin-y (id0 40) &
+  fact end-x   (id0 120) &
+  fact end-y   (id0 40) &
+
+  fact begin-x (id1 50) &
+  fact begin-y (id1 50) &
+  fact end-x   (id1 130) &
+  fact end-y   (id1 50) &
+
+  fact begin-x (id2 60) &
+  fact begin-y (id2 60) &
+  fact end-x   (id2 140) &
+  fact end-y   (id2 60) &
+
+  fact begin-x (id3 70) &
+  fact begin-y (id3 70) &
+  fact end-x   (id3 150) &
+  fact end-y   (id3 70) &
+
+  fact begin-x (id4 45) &
+  fact begin-y (id4 45) &
+  fact end-x   (id4 125) &
+  fact end-y   (id4 45) &
+
+  fact begin-x (id5 125) &
+  fact begin-y (id5 45) &
+  fact end-x   (id5 125) &
+  fact end-y   (id5 125) &
+
+  fact begin-x (id6 125) &
+  fact begin-y (id6 125) &
+  fact end-x   (id6 45) &
+  fact end-y   (id6 125) &
+
+  fact begin-x (id7 45) &
+  fact begin-y (id7 125) &
+  fact end-x   (id7 45) &
+  fact end-y   (id7 45)
+}
+
+->
+
+~{
+  @box (L1 L2 L3 L4) & fact box (L1 L2 L3 L4)
+
+  rule line (ID X Y Xe Ye) {
+    begin-x (ID X)
+    & begin-y (ID Y)
+    & end-x (ID Xe)
+    & end-y (ID Ye)
+  }
+
+  rule unique (ID1 ID2 ID3 ID4) {
+    @neq (ID1 ID2) & @neq (ID1 ID3) & @neq (ID1 ID4)
+    & @neq (ID2 ID3) & @neq (ID2 ID4)
+    & @neq (ID3 ID4)
+  }
+
+  rule box (ID1 ID2 ID3 ID4) {
+      @line (ID1 X1 Y1 Xe1 Ye2)
+    & @line (ID2 Xe1 Ye1 Xe2 Ye2)
+    & @line (ID3 Xe2 Ye2 Xe3 Ye3)
+    & @line (ID4 Xe3 Ye3 X1 Y1)
+    & @unique (ID1 ID2 ID3 ID4)
+  }
+
+}
+
+///////////////
+// transpiled to JavaScript
+///////////////
+
+clear(). // begin pipeline
+
+// first match
+fact ("begin-x", "id0", 40);
+fact ("begin-y", "id0", 40);
+fact ("end-x", "id0", 120);
+fact ("end-y", "id0", 40);
+fact ("begin-x", "id1", 50);
+fact ("begin-y", "id1", 50);
+fact ("end-x", "id1", 130);
+fact ("end-y", "id1", 50);
+fact ("begin-x", "id2", 60);
+fact ("begin-y", "id2", 60);
+fact ("end-x", "id2", 140);
+fact ("end-y", "id2", 60);
+fact ("begin-x", "id3", 70);
+fact ("begin-y", "id3", 70);
+fact ("end-x", "id3", 150);
+fact ("end-y", "id3", 70);
+fact ("begin-x", "id4", 45);
+fact ("begin-y", "id4", 45);
+fact ("end-x", "id4", 125);
+fact ("end-y", "id4", 45);
+fact ("begin-x", "id5", 125);
+fact ("begin-y", "id5", 45);
+fact ("end-x", "id5", 125);
+fact ("end-y", "id5", 125);
+fact ("begin-x", "id6", 125);
+fact ("begin-y", "id6", 125);
+fact ("end-x", "id6", 45);
+fact ("end-y", "id6", 125);
+fact ("begin-x", "id7", 45);
+fact ("begin-y", "id7", 125);
+fact ("end-x", "id7", 45);
+fact ("end-y", "id7", 45);
+
+// second match, uses existing factbase
+rule (["line", lvar("X"), lvar("Y"), lvar("Xe"), lvar("Ye")],
+      [ ["begin-x", lvar ("ID"), lvar ("X")],
+        ["begin-y", lvar ("ID"), lvar ("Y")],
+	["end-x", lvar ("ID"), lvar ("Xe")],
+	["end-y", lvar ("ID"), lvar ("Ye")] ]);
+rule (["unique", lvar ("ID1"), lvar ("ID2"), lvar ("ID3"), lvar ("ID4")],
+      [ ["neq", lvar ("ID1"), lvar ("ID2")],
+        ["neq", lvar ("ID1"), lvar ("ID3")],
+        ["neq", lvar ("ID1"), lvar ("ID4")],
+        ["neq", lvar ("ID2"), lvar ("ID3")],
+        ["neq", lvar ("ID2"), lvar ("ID4")],
+        ["neq", lvar ("ID3"), lvar ("ID4")] ]);
+	 
+rule (["box", lvar ("ID1"), lvar ("ID2"), lvar ("ID3"), lvar ("ID4")],
+      [
+        ["line", lvar ("ID1"), lvar ("X1"), lvar ("Y1"), lvar ("Xe1"), lvar ("Ye1")],
+	["line", lvar ("ID2"), lvar ("Xe1"), lvar ("Ye1"), lvar ("Xe2"), lvar ("Ye2")],
+	["line", lvar ("ID3"), lvar ("Xe2"), lvar ("Ye2"), lvar ("Xe3"), lvar ("Ye3")],
+	["line", lvar ("ID4"), lvar ("Xe3"), lvar ("Ye3"), lvar ("X1"), lvar ("Y1")],
+	["unique", lvar ("ID1"), lvar ("ID2"), lvar ("ID3"), lvar ("ID4")]
+      ]);
+match ([
+        ["box", lvar ("L1"), lvar ("L2"), lvar ("L3"), lvar ("L4")],
+	["fact", "box", lvar ("L1"), lvar ("L2"), lvar ("L3"), lvar ("L4")]
+      ]);
+
+////
+// example from Prolog in 6 Slides
+////
+
+// (define db
+//   '(((some foo))
+//     ((some bar))
+//     ((some baz))
+
+//     ((eq ("?" X) ("?" X)))
+
+//     ((neq ("?" X) ("?" Y))
+//      (eq ("?" X) ("?" Y)) ! fail)
+
+//     ((neq ("?" X) ("?" Y)))))
+
+// (define goals '((some ("?" X))
+//                 (some ("?" Y))
+//                 (neq ("?" X) ("?" Y))))
+
+~{
+   some (X) & some (Y) & @neq (X, Y)
+
+   rule eq (X, X) {}
+   rule neq (X, Y) { (@eq (X, Y) & cut & fail) | succeed }
+   fact some (foo)
+   fact some (bar)
+   fact some (baz)
+}
+
+////
+// transpiled to JS
+////
+fact ("some", "foo");
+fact ("some", "bar");
+fact ("some", "baz");
+rule (["eq", lvar ("X"), lvar ("X")], []);
+rule (["neq", lvar ("X"), lvar ("Y")], 
+     or ( 
+       and(
+            ["eq", lvar ("X"), lvar ("Y)], 
+	    cut (),
+	    fail ()
+	  ),
+	and( succeed() )
+      ));
+match (and (["some", lvar("X")], 
+            ["some", lvar ("Y")], 
+	    ["neq", lvar ("X"), lvar ("Y")]));
+	    
+                             
+
+///////////////
+// other ideas for syntax
+//////////////
+
+//////////////
+~{
+  @box (L1 L2 L3 L4) & fact box (L1 L2 L3 L4)
+
+  fact begin-x (id0 40)
+  fact begin-y (id0 40)
+  fact end-x   (id0 120)
+  fact end-y   (id0 40)
+
+  fact begin-x (id1 50)
+  fact begin-y (id1 50)
+  fact end-x   (id1 130)
+  fact end-y   (id1 50)
+
+  fact begin-x (id2 60)
+  fact begin-y (id2 60)
+  fact end-x   (id2 140)
+  fact end-y   (id2 60)
+
+  fact begin-x (id3 70)
+  fact begin-y (id3 70)
+  fact end-x   (id3 150)
+  fact end-y   (id3 70)
+
+  fact begin-x (id4 45)
+  fact begin-y (id4 45)
+  fact end-x   (id4 125)
+  fact end-y   (id4 45)
+
+  fact begin-x (id5 125)
+  fact begin-y (id5 45)
+  fact end-x   (id5 125)
+  fact end-y   (id5 125)
+
+  fact begin-x (id6 125)
+  fact begin-y (id6 125)
+  fact end-x   (id6 45)
+  fact end-y   (id6 125)
+
+  fact begin-x (id7 45)
+  fact begin-y (id7 125)
+  fact end-x   (id7 45)
+  fact end-y   (id7 45)
+
+  rule line (ID X Y Xe Ye) {
+    begin-x (ID X)
+    & begin-y (ID Y)
+    & end-x (ID Xe)
+    & end-y (ID Ye)
+  }
+
+  rule unique (ID1 ID2 ID3 ID4) {
+    @neq (ID1 ID2) & @neq (ID1 ID3) & @neq (ID1 ID4)
+    & @neq (ID2 ID3) & @neq (ID2 ID4)
+    & @neq (ID3 ID4)
+  }
+
+  rule box (ID1 ID2 ID3 ID4) {
+      @line (ID1 X1 Y1 Xe1 Ye2)
+    & @line (ID2 Xe1 Ye1 Xe2 Ye2)
+    & @line (ID3 Xe2 Ye2 Xe3 Ye3)
+    & @line (ID4 Xe3 Ye3 X1 Y1)
+    & @unique (ID1 ID2 ID3 ID4)
+  }
+
+}
+
+//////////////
+
+var db = List ();
+
+function clear () { db = List (); };
+function pushDB (x) { db = cons (x, db); };
+function lvar (s) { return list("?",s); };
+function fact0 (r) { pushDB (list (list (r))); }
+function fact1 (r,s) { pushDB (list (list (r,s))); }
+function fact2 (r,s,o) { pushDB (list (list (r,s,o))); }
+
+//clear.
+//some(foo).
+//some(bar).
+//some(baz).
+//eq(X,X) = true.
+//neq(X,Y) = eq(X,Y) & cut & false.
+//goal(some(Z) & some(Y) & neq(X,Y)).
+
+clear();
+pushDB (list (list ("some","foo")))
+pushDB (list (list ("some","bar")))
+pushDB (list (list ("some","baz")))
+pushDB (list ("eq", lvar ("X"), lvar ("X")) = true);
+pushDB (list ("neq", lvar ("X"), lvar ("Y")),
+        list ("eq",  lvar("X"), lvar("Y")),
+	cut,
+	fail);
+pushGoal (
+	  list ("some", lvar("X")),
+	  list ("some", lvar("Y")),
+	  list ("neq", lvar ("X"), lvar ("Y"))
+	  );
+console.log (match ());
+
+//////////////
+
+clear
+fact1 (some, foo);
+fact1 (some, bar);
+fact1 (some, baz);
+rule eq (X, Y) { list (succeed)) }
+rule neq (X, Y) { eq (X, Y) & cut & fail }
+
+
+//////////////
+
+// (define db
+//   '(((some foo))
+//     ((some bar))
+//     ((some baz))
+
+//     ((eq ("?" X) ("?" X)))
+
+//     ((neq ("?" X) ("?" Y))
+//      (eq ("?" X) ("?" Y)) ! fail)
+
+//     ((neq ("?" X) ("?" Y)))))
+
+// (define goals '((some ("?" X))
+//                 (some ("?" Y))
+//                 (neq ("?" X) ("?" Y))))
+
+/*
+let db = 
+list(
+  list(list("some","foo")),
+  list(list("some","bar")),
+  list(list("some","baz")),
+  list(list("eq",list("?","X"),list("?","X"))),
+
+  list(list("neq",list("?","X"),list("?","Y")),
+       list("eq",list("?","X"),list("?","Y")),
+       "!",
+       "fail"),
+
+  list(list("neq",list("?","X"),list("?","Y"))));
+
+let goals = list(list("some",list("?","X")),list("some",list("?","Y")),list("neq",list("?","X"),list("?","Y")));
+
+clear_result();
+prove6(list(),goals,db,empty,1,list(),db);
+console.log(get_result ().toString ());
+*/
+
+clear.
+fact some
+{
+  "foo"
+| "bar"
+| "baz"
+}
+
+rule eq (X, X)
+{
+  succeed
+}
+
+rule neq (X, Y)
+{
+    eq (X, Y)
+  & cut
+  & fail
+}
+
+match {
+    some (X)
+  & some (Y)
+  & neq (X, Y)
+}
+
+
+//////////////
+clear
+fact some { "foo" | "bar" | "baz" }
+rule eq (X, X) { suceed }
+rule neq (X, Y) { eq (X, Y) & cut & fail }
+match { some (X) & some (Y) & neq (X, Y) }
+
+
+~{
+  fact some { foo | bar | baz }
+  rule eq (X, X) { ~succeed }
+  rule neq (X, Y) { eq (X, Y) & ~cut & ~fail }
+  { some (X) & some (Y) & neq (X, Y) }
+}
+
+fact "id0" {
+  line_x1 40
+  line_y1 40
+  line_x2 120
+  line_y2 40
+
+~{
+  fact begin-x id0 40
+  fact begin-y id0 40
+  fact end-x   id0 120
+  fact end-y   id0 40
+
+  fact begin-x id1 50
+  fact begin-y id1 50
+  fact end-x   id1 130
+  fact end-y   id1 50
+
+  fact begin-x id2 60
+  fact begin-y id2 60
+  fact end-x   id2 140
+  fact end-y   id2 60
+
+  fact begin-x id3 70
+  fact begin-y id3 70
+  fact end-x   id3 150
+  fact end-y   id3 70
+
+  fact begin-x id4 45
+  fact begin-y id4 45
+  fact end-x   id4 125
+  fact end-y   id4 45
+
+  fact begin-x id5 125
+  fact begin-y id5 45
+  fact end-x   id5 125
+  fact end-y   id5 125
+
+  fact begin-x id6 125
+  fact begin-y id6 125
+  fact end-x   id6 45
+  fact end-y   id6 125
+
+  fact begin-x id7 45
+  fact begin-y id7 125
+  fact end-x   id7 45
+  fact end-y   id7 45
+
+  rule line (Line X Y Xe Ye) {
+    begin-x Line X
+    begin-y Line Y
+    end-x   Line Xe
+    end-y   Line Ye
+  }
+
+  rule box (Line1 Line2 Line3 Line4) {
+    foreach line (X1 Y1 Xe1 Ye1) {
+      foreach line (X2 Y2 Xe2 Ye2) {
+        foreach line (X3 Y3 Xe3 Ye3) {
+	  foreach line (X4 Y4 Xe4 Ye4) {
+            where {
+	       = Xe1 X2
+	     & = Ye1 Y2
+	     & /= Line1 Line2
+	     & = Xe2 X3
+	     & = Ye2 Y3
+	     & /= Line2 Line3
+	     & = Xe3 X4
+	     & = Ye3 Y4
+	     & /= Line3 Line4
+	     & = Xe4 X1
+	     & = Ye4 Y1
+	     & /= Line4 Line1
+           }
+          yes
+        }
+      }
+    }
+  }
+}

@@ -46,6 +46,7 @@ Matcher {
     lowerCaseLetter = "a" .. "z"
     upperCaseLetter = "A" .. "Z"
     identLetter = lowerCaseLetter | upperCaseLetter | "0" .. "9" | "_" | "-"
+
 }
 `;
 
