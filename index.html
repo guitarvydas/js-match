@@ -590,14 +590,17 @@ function orRule (head, bodies) {
     // body is an array of Cons()
     var rule;
     if (0 == bodies.length) {
-	rule = cons (head, nil);
+	rule = cons (head, nil ());
     } else {
 	rule = list ();
-	bodies.forEach ( body => { rule = cons (cons (head, body), rule); } );
+	bodies.forEach ( body => { rule = cons (list (head, body), rule); } );
     }
+    console.log (rule.toString ());
     var rrule = listReverse (rule);
     console.log(rrule.toString());
     pushDB (rrule);
+    console.log (db.toString ());
+    return "nil";
 };
 function lvar (letter) { return list ("?", letter); };
 function succeed () { return list (); };
