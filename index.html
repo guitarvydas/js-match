@@ -1,3 +1,9 @@
+<html>
+  <title>Match Test</title>
+  <head>
+
+    <script>
+      // prolog.js
 //
 // transpiled from Nils Holm's Prolog Control in 6 slides
 // see https://github.com/guitarvydas/OhmSmallSteps for transpiler
@@ -279,19 +285,21 @@ function display(x) {
     } else if (x == undefined) {
 	process.stdout.write("undefined");
     } else {
-	console.log (x);
-	console.log (x.toString ().length);
-	console.log (x.toString ());
-	process.stdout.write(x.toString()); 
+	process.stdout.write(x.toString() + "\n"); 
     }
-}
-
+};
+      
 function listReverse (lis) {
-    throw "NIY";
-}
-function nil (lis) {
+    if (isNil (lis)) {
+	return lis;
+    } else {
+	return AppendInefficient(listReverse (cdr (lis)), list (car (lis)));
+    };
+};
+
+function nil () {
     return "nil";
-}
+};
 ///////
 // end support functions
 ///////
@@ -562,3 +570,90 @@ clear_result();
 prove6(list(),goals,db,empty,1,list(),db);
 console.log(get_result ().toString ());
 */
+    </script>
+    
+    <script>
+////
+// transpiled to JS
+////
+var db = list ();
+
+function clearDB () { db = list (); };
+function pushDB (x) { db = cons (x, db); };
+function lvar (s) { return list ("?",s); };
+function fact0 (r) { pushDB (list (list (r))); }
+function fact1 (r,s) { pushDB (list (list (r,s))); }
+function fact2 (r,s,o) { pushDB (list (list (r,s,o))); }
+function orRule (head, bodies) {
+    // make multiple rules, one for each body clause: cons(head,clause)
+    // head is a Cons()
+    // body is an array of Cons()
+    var rule;
+    if (0 == bodies.length) {
+	rule = cons (head, nil);
+    } else {
+	rule = list ();
+	bodies.forEach ( body => { rule = cons (cons (head, body), rule); } );
+    }
+    var rrule = listReverse (rule);
+    console.log(rrule.toString());
+    pushDB (rrule);
+};
+function lvar (letter) { return list ("?", letter); };
+function succeed () { return list (); };
+function cut () { return "!"; };
+function fail () { return "fail"; };
+function match (goal) {
+    clear_result ();
+    console.log (db.toString());
+    console.log (goal.toString());
+    prove6 (list (), goal, db, empty, 1, list (), db);
+    var r = get_result ();
+    console.log (r.toString ());
+    return r;
+}
+
+      function execMatch () {
+	  clearDB ();
+	  fact1 ("some", "foo");
+	  fact1 ("some", "bar");
+	  fact1 ("some", "baz");
+	  orRule (list ("eq", lvar ("X"), lvar ("X")), []);
+	  orRule (list ("neq", lvar ("X"), lvar ("Y")),
+		  [
+		      list (
+			  list ("eq", lvar ("X"), lvar ("Y")), 
+			  cut (),
+			  fail ()
+		      ),
+		      list ( succeed () )
+		  ]
+		 );
+	  return match (
+	      list (
+		  list ("some", lvar ("X")), 
+		  list ("some", lvar ("Y")), 
+		  list ("neq", lvar ("X"), lvar ("Y"))
+	      ));
+      }
+    </script>
+
+    <script>
+      function displayDate () {
+	  document.getElementById('timestamp').innerHTML = Date();
+      }
+      function runMatch () {
+	  var r = execMatch ();
+	  document.getElementById(el).innerHTML = r;
+	  displayDate ();
+      }
+    </script>
+    
+  </head>
+  <body>
+    <h1>Match Test</h1>
+    <button onclick="runMatch()">Display Input</button>
+    <p id="timestamp"></p>
+    <p id="result"></p>
+  </body>
+</html>

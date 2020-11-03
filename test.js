@@ -30,6 +30,11 @@ function l_and () {
     }
     return result;
 };
+function match (goal) {
+    clear_result ();
+    prove6 (list (), goal, db, empty, 1, list (), db);
+    console.log (get_result ());
+}
 
 clearDB ();
 fact1 ("some", "foo");
@@ -44,7 +49,8 @@ orRule (["neq", lvar ("X"), lvar ("Y")],
 	  )],
 	[ l_and( succeed() )]
        );
+clear_result ();
 match (l_and (["some", lvar("X")], 
             ["some", lvar ("Y")], 
-	    ["neq", lvar ("X"), lvar ("Y")]));
+	      ["neq", lvar ("X"), lvar ("Y")]));
 	    
