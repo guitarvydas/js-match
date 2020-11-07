@@ -1,2 +1,2 @@
-console.log (execMatch().toString());
+console.log (execQuery().toString());
 

@@ -25,19 +25,19 @@ function lvar (letter) { return list ("?", letter); };
 function succeed () { return list (); };
 function cut () { return "!"; };
 function fail () { return "fail"; };
-function match (goal) {
+function query (goal) {
     clear_result ();
     prove6 (list (), goal, db, empty, 1, list (), db);
     var r = get_result ();
     return r;
 }
 
-      function execMatch () {
+      function execQuery () {
 	  clearDB ();
 	  fact1 ("some", "foo");
 	  fact1 ("some", "bar");
 	  fact1 ("some", "baz");
-	  orRule (list ("eq", lvar ("X"), lvar ("X")), [succeed ()]);
+	  orRule (list ("eq", lvar("X"), lvar ("X")), [succeed ()]);
 	  orRule (list ("neq", lvar ("X"), lvar ("Y")),
 		  [
 		      list (
@@ -48,7 +48,7 @@ function match (goal) {
 		      succeed ()
 		  ]
 		 );
-	  var result= match (
+	  var result= query (
 	      list (
 		  list ("some", lvar ("X")), 
 		  list ("some", lvar ("Y")), 
