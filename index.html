@@ -589,27 +589,22 @@ function orRule (head, bodies) {
     // head is a Cons()
     // body is an array of Cons()
     var rule;
-    if (0 == bodies.length) {
-	rule = cons (head, nil ());
-    } else {
-	rule = list ();
-	bodies.forEach ( body => { rule = cons (list (head, body), rule); } );
-    }
-    console.log (rule.toString ());
-    var rrule = listReverse (rule);
-    console.log(rrule.toString());
-    pushDB (rrule);
-    console.log (db.toString ());
+    for (var i = (bodies.length - 1) ; i >= 0 ; i -= 1) {
+	body = bodies[i];
+	rule = cons (head, body);
+	pushDB (rule);
+    };
+    debug ("(:orule3 db=) " + db.toString ());
     return "nil";
 };
 function lvar (letter) { return list ("?", letter); };
-function succeed () { return list (); };
+function succeed () { return nil (); };
 function cut () { return "!"; };
 function fail () { return "fail"; };
 function match (goal) {
     clear_result ();
-    console.log (db.toString());
-    console.log (goal.toString());
+    debug ("(:match :db) " + db.toString());
+    debug ("(:match :goal) " + goal.toString());
     prove6 (list (), goal, db, empty, 1, list (), db);
     var r = get_result ();
     console.log (r.toString ());
@@ -621,7 +616,7 @@ function match (goal) {
 	  fact1 ("some", "foo");
 	  fact1 ("some", "bar");
 	  fact1 ("some", "baz");
-	  orRule (list ("eq", lvar ("X"), lvar ("X")), []);
+	  orRule (list ("eq", lvar ("X"), lvar ("X")), [succeed ()]);
 	  orRule (list ("neq", lvar ("X"), lvar ("Y")),
 		  [
 		      list (
@@ -629,7 +624,7 @@ function match (goal) {
 			  cut (),
 			  fail ()
 		      ),
-		      list ( succeed () )
+		      succeed ()
 		  ]
 		 );
 	  return match (
@@ -645,9 +640,13 @@ function match (goal) {
       function displayDate () {
 	  document.getElementById('timestamp').innerHTML = Date();
       }
+      function debug (more) {
+	  var str = document.getElementById ('debug').innerHTML;
+	  document.getElementById('debug').innerHTML = str + "<BR>" + more;
+      }
       function runMatch () {
 	  var r = execMatch ();
-	  document.getElementById(el).innerHTML = r;
+	  document.getElementById('result').innerHTML = r;
 	  displayDate ();
       }
     </script>
@@ -657,6 +656,7 @@ function match (goal) {
     <h1>Match Test</h1>
     <button onclick="runMatch()">Display Input</button>
     <p id="timestamp"></p>
+    <p id="debug"></p>
     <p id="result"></p>
   </body>
 </html>
