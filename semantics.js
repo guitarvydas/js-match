@@ -8,7 +8,7 @@ semantics.addOperation(
 	
 	ClearStatement: function (_clear) { return "clear();";},
 	Rule: function (head, _eq, body) { return `rule (${head.transpile ()}, ${body.transpile ()});`;},
-	Fact: function (head) { return `fact (${head.transpile ()});` },
+	Fact: function (head) { return `fact1 (${head.transpile ()});` },
 	Query: function (_match, _lpar, expression, _rpar) { return `query(${expression.transpile ()});`;},
 
 	BinaryRelation: function (relation, _lpar, subject, _comma, object, _rpar) { return relation.transpile () + subject.transpile () + object.transpile ();},
@@ -20,8 +20,8 @@ semantics.addOperation(
 	Object: function (primary) { return primary.transpile (); },
 
 	Head: function (head) { return head.transpile (); },
-	BinaryHead: function (id, _lpar, formal1, _comma, formal2, _rpar) { return id.transpile () + " " + formal1.transpile () + " " + formal2.transpile ();},
-	UnaryHead: function (id, _lpar, formal, _rpar) { return id.transpile () + " " + formal.transpile ();},
+	BinaryHead: function (id, _lpar, formal1, _comma, formal2, _rpar) { return id.transpile () + " " + formal1.transpile () + ", " + formal2.transpile ();},
+	UnaryHead: function (id, _lpar, formal, _rpar) { return id.transpile () + ", " + formal.transpile ();},
 	NonaryHead: function (id) { return id.transpile ();},
 	Body: function (expression) { return expression.transpile ();},
 

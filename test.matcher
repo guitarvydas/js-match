@@ -4,4 +4,5 @@ some(bar).
 some(baz).
 eq(X,X) = true.
 neq(X,Y) = eq(X,Y) & cut & false.
+neq(X,Y) = true.
 match(some(X) & some(Y) & neq(X,Y)).
