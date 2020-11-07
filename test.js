@@ -1,16 +1,16 @@
 ////
 // transpiled to JS
 ////
-var db = List ();
+var db = list ();
 
-function clearDB () { db = List (); };
+function clearDB () { db = list (); };
 function pushDB (x) { db = cons (x, db); };
 function lvar (s) { return list("?",s); };
 function fact0 (r) { pushDB (list (list (r))); }
 function fact1 (r,s) { pushDB (list (list (r,s))); }
 function fact2 (r,s,o) { pushDB (list (list (r,s,o))); }
 function convertForFactbase (arr) {
-    var result = List ();
+    var result = list ();
     let a = arr.reverse ();
     a.forEach (item => result = cons (item, result));
     return result;
@@ -20,12 +20,12 @@ function orRule (head, body) {
     body.forEach (b => pushDB (list (h, convertForFactbase (b))));
 };
 function lvar (letter) { return cons ("?", letter); };
-function succeed () { return List (); };
+function succeed () { return list (); };
 function cut () { return "!"; };
 function fail () { return "fail"; };
 function l_and () { 
-    var result = List ();
-    for (var i = (arguments.length - 1) ; i > = 0 ; i--) {
+    var result = list ();
+    for (var i = (arguments.length - 1) ; i >= 0 ; i--) {
 	result = cons (arguments[i], result);
     }
     return result;
