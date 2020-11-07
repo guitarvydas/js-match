@@ -1,9 +1,3 @@
-//
-// transpiled from Nils Holm's Prolog Control in 6 slides
-// see https://github.com/guitarvydas/OhmSmallSteps for transpiler
-// see https://www.t3x.org/bits/prolog6.html for Prolog Control in 6 Slides
-//
-
 function first(x) {
 return car(x);
 };
@@ -29,8 +23,11 @@ return (result_ = list());
 function append_to_result(lis) {
 return (result_ = cons(lis,result_));
 };
+function get_result() {
+return result_;
+};
 function display_result() {
-return display(result_);
+return display(get_result());
 };
 let link = list;
 let L_l = car;
@@ -255,8 +252,6 @@ return final_result;
 
 })();
 };
-
-// basic testing from Ohm In Small Steps - comment tests out
 // let db = list(list(list("some","foo")),list(list("some","bar")),list(list("some","baz")),list(list("eq",list("?","X"),list("?","X"))),list(list("neq",list("?","X"),list("?","Y")),list("eq",list("?","X"),list("?","Y")),"!","fail"),list(list("neq",list("?","X"),list("?","Y"))));
 // let goals = list(list("some",list("?","X")),list("some",list("?","Y")),list("neq",list("?","X"),list("?","Y")));
 // clear_result();

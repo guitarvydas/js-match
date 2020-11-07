@@ -9,27 +9,13 @@ function lvar (s) { return list("?",s); };
 function fact0 (r) { pushDB (list (list (r))); }
 function fact1 (r,s) { pushDB (list (list (r,s))); }
 function fact2 (r,s,o) { pushDB (list (list (r,s,o))); }
-function convertForFactbase (arr) {
-    var result = list ();
-    let a = arr.reverse ();
-    a.forEach (item => result = cons (item, result));
-    return result;
-};	
-function orRule (head, body) {
-    var h = convertForFactbase (head);
-    body.forEach (b => pushDB (list (h, convertForFactbase (b))));
+function orRule (head, body) {  /// head is a list(...), body is an array of list(...)
+    body.forEach (b => pushDB (list (h, b)));
 };
-function lvar (letter) { return cons ("?", letter); };
+function lvar (letter) { return list ("?", letter); };
 function succeed () { return list (); };
 function cut () { return "!"; };
 function fail () { return "fail"; };
-function l_and () { 
-    var result = list ();
-    for (var i = (arguments.length - 1) ; i >= 0 ; i--) {
-	result = cons (arguments[i], result);
-    }
-    return result;
-};
 function match (goal) {
     clear_result ();
     prove6 (list (), goal, db, empty, 1, list (), db);
@@ -40,17 +26,26 @@ clearDB ();
 fact1 ("some", "foo");
 fact1 ("some", "bar");
 fact1 ("some", "baz");
-orRule (["eq", lvar ("X"), lvar ("X")], []);
-orRule (["neq", lvar ("X"), lvar ("Y")], 
-	[ l_and(
-	    ["eq", lvar ("X"), lvar ("Y")], 
-	    cut (),
-	    fail ()
-	  )],
-	[ l_and( succeed() )]
+// orRule (["eq", lvar ("X"), lvar ("X")], [ succeed (); ]);
+orRule (list ("eq", lvar ("X"), lvar ("X")), [ succeed (); ]);
+// orRule (["neq", lvar ("X"), lvar ("Y")], 
+// 	[ ["eq", lvar ("X"), lvar ("Y")], 
+// 	    cut (),
+// 	    fail ()
+// 	  )],
+// 	[ l_and( succeed() )]
+//        );
+orRule (list ("neq", lvar ("X"), lvar ("Y")),
+	[ list ( list( "eq", lvar ("X"), lvar ("Y")), 
+		 cut (),
+		 fail ()),
+	[ succeed() ]
        );
 clear_result ();
-match (l_and (["some", lvar("X")], 
-            ["some", lvar ("Y")], 
-	      ["neq", lvar ("X"), lvar ("Y")]));
+match ( list (
+                 list ("some", lvar("X")), 
+                 list ("some", lvar ("Y"))
+                 list ("neq", lvar ("X"), lvar ("Y"))
+             )
+      );
 	    

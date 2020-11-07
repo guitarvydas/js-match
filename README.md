@@ -22,6 +22,7 @@ match(some(Z) & some(Y) & neq(X,Y)).
 
 Based on the transpilation of Nils Holm's PROLOG In 6 Slides) to JS (see https://github.com/guitarvydas/OhmSmallSteps - if you don't want to read the full article, just grab support.js and prolog-6.js).
 
+# development: using index.html to debug
 # development: using test.js to try out various hand-transpiled code sequences
 # development: run node test.js to test
 
