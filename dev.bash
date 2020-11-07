@@ -1,3 +1,3 @@
 #!/bin/bash
-cat support.js test.js >full.js
+cat support.js prolog.js test.js runit.js >full.js
 node full.js
