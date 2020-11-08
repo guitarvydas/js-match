@@ -33,8 +33,8 @@ Matcher {
     Body = MatchExpression
 
     Formal = BinaryFunctor | UnaryFunctor | NonaryFunctor | logicVariable | identifier
-    MatchExpression = MatchFactor ( "|" MatchFactor)*
-    MatchFactor = MatchAtom ( "&" MatchAtom)* 
+    MatchExpression = (MatchFactor  "|")* MatchFactor
+    MatchFactor = (MatchAtom "&")*  MatchAtom
     MatchAtom = Keyword | BinaryFunctor | UnaryFunctor | NonaryFunctor
     Keyword = "cut" | "true" | "false"
     BinaryFunctor = identifier "(" Primary "," Primary ")"

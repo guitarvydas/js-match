@@ -26,8 +26,24 @@ semantics.addOperation(
 	Body: function (expression) { return expression.transpile ();},
 
 	Formal: function (f) { return f.transpile (); },
-	MatchExpression: function (factor, _or, orFactors) { return factor.transpile () + orFactors.transpile ().join (" | ") ;},
-	MatchFactor: function (atom, _and, andAtoms) { return  atom.transpile () + andAtoms.transpile ().join (", ") ;},
+	MatchExpression: function (orFactors, _or, factor) {
+	    var result;
+	    if (orFactors.children.length > 0) {
+		result += orFactors.transpile ().join (" | ") + ", " + factor.transpile ();
+	    } else {
+		result = factor.transpile ();
+	    }
+	    return result;
+	},
+	MatchFactor: function (andAtoms, _and, atom) { 
+	    var result;
+	    if (andAtoms.children.length > 0) {
+		result = andAtoms.transpile ().join (", ") + ", " + atom.transpile ();
+	    } else {
+		result = atom.transpile ();
+	    };
+	    return result;
+	},
 	MatchAtom: function (atom) { return atom.transpile (); },
 	Keyword: function (k) { return k.transpile (); },
 	BinaryFunctor: function (id, _lpar, primary1, _comma, primary2, _rpar) { return  "functor2 (" + id.transpile() + ", " + primary1.transpile () + ", " + primary2.transpile () + ")";},
