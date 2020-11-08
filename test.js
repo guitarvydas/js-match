@@ -9,15 +9,15 @@ function lvar (s) { return list ("?",s); };
 function fact0 (r) { pushDB (list (list (r))); }
 function fact1 (r,s) { pushDB (list (list (r,s))); }
 function fact2 (r,s,o) { pushDB (list (list (r,s,o))); }
-function orRule (head, bodies) {
+function rule (head, bodies) {
     // make multiple rules, one for each body clause: cons(head,clause)
     // head is a Cons()
     // body is an array of Cons()
-    var rule;
+    var rle;
     for (var i = (bodies.length - 1) ; i >= 0 ; i -= 1) {
 	body = bodies[i];
-	rule = cons (head, body);
-	pushDB (rule);
+	rle = cons (head, body);
+	pushDB (rle);
     };
     return "nil";
 };
@@ -37,8 +37,8 @@ function query (goal) {
 	  fact1 ("some", "foo");
 	  fact1 ("some", "bar");
 	  fact1 ("some", "baz");
-	  orRule (list ("eq", lvar("X"), lvar ("X")), [succeed ()]);
-	  orRule (list ("neq", lvar ("X"), lvar ("Y")),
+	  rule (list ("eq", lvar("X"), lvar ("X")), [succeed ()]);
+	  rule (list ("neq", lvar ("X"), lvar ("Y")),
 		  [
 		      list (
 			  list ("eq", lvar ("X"), lvar ("Y")), 

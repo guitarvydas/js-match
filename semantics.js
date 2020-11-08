@@ -9,7 +9,7 @@ semantics.addOperation(
 	ClearStatement: function (_clear) { return "clear();";},
 	Rule: function (head, _eq, body) { return `rule (list (${head.transpile ()}), list (${body.transpile ()}));`;},
 	Fact: function (head) { return `fact1 (${head.transpile ()});` },
-	Query: function (_match, _lpar, expression, _rpar) { return `query(${expression.transpile ()});`;},
+	Query: function (_match, _lpar, expression, _rpar) { return `query (${expression.transpile ()});`;},
 
 	BinaryRelation: function (relation, _lpar, subject, _comma, object, _rpar) { return relation.transpile () + subject.transpile () + object.transpile ();},
 	UnaryRelation: function (relation, _lpar, subject, _rpar) { return relation.transpile () + " " + subject.transpile ();},
