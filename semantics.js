@@ -48,7 +48,7 @@ semantics.addOperation(
 
 	Keyword: function (k) { return k.transpile (); },
 	kwCut: function (_) { return "cut ()"; },
-	kwTrue: function (_) { return "succeed ()"; },
+	kwTrue: function (_) { return ""; },
 	kwFalse: function (_) { return "fail ()"; },
 
 	BinaryFunctor: function (id, _lpar, primary1, _comma, primary2, _rpar) { return  "functor2 (" + id.transpile() + ", " + primary1.transpile () + ", " + primary2.transpile () + ")";},

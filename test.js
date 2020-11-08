@@ -4,22 +4,17 @@
 	  fact1 ("some", "bar");
 	  fact1 ("some", "baz");
           rule (head ("eq", lvar("X"), lvar ("X")), 
-		bodies (
-		    body ( succeed () )
-		));
-	  rule (head ("neq", lvar ("X"), lvar ("Y")),
-		bodies (
-		      body (
-			  functor2 ("eq", lvar ("X"), lvar ("Y")), 
-			  cut (),
-			  fail ()
- 		      )
-		)
+		body ( )
 		);
 	  rule (head ("neq", lvar ("X"), lvar ("Y")),
-		bodies (
-  		    body ( succeed () )
-		)
+		body (
+		    functor2 ("eq", lvar ("X"), lvar ("Y")), 
+		    cut (),
+		    fail ()
+ 		)
+		);
+	  rule (head ("neq", lvar ("X"), lvar ("Y")),
+  		body ( )
 	       );
 	  var result= query (
 	      goal (
