@@ -36,7 +36,10 @@ Matcher {
     MatchExpression = (MatchFactor  "|")* MatchFactor
     MatchFactor = (MatchAtom "&")*  MatchAtom
     MatchAtom = Keyword | BinaryFunctor | UnaryFunctor | NonaryFunctor
-    Keyword = "cut" | "true" | "false"
+    Keyword = kwCut | kwTrue | kwFalse
+    kwCut = "cut"
+    kwTrue = "true"
+    kwFalse = "false"
     BinaryFunctor = identifier "(" Primary "," Primary ")"
     UnaryFunctor = identifier "(" Primary ")"
     NonaryFunctor = identifier

@@ -11,11 +11,12 @@ function rule (head, bodies) {
     // head is a Cons()
     // body is an array of Cons()
     var rle;
-    for (var i = (bodies.length - 1) ; i >= 0 ; i -= 1) {
-	body = bodies[i];
+    while (! (isNil (bodies))) {
+	var body = car (bodies);
+	bodies = cdr (bodies);
 	rle = cons (head, body);
 	pushDB (rle);
-    };
+    }
     return "nil";
 };
 function lvar (letter) { return list ("?", letter); };

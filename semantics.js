@@ -9,7 +9,7 @@ semantics.addOperation(
 	ClearStatement: function (_clear) { return "clearDB();";},
 	Rule: function (head, _eq, body) { return `rule (head (${head.transpile ()}), body (${body.transpile ()}));`;},
 	Fact: function (head) { return `fact1 (${head.transpile ()});` },
-	Query: function (_match, _lpar, expression, _rpar) { return `return query (goal (${expression.transpile ()}));`;},
+	Query: function (_match, _lpar, expression, _rpar) { return `var result = query (goal (${expression.transpile ()}));`;},
 
 	BinaryRelation: function (relation, _lpar, subject, _comma, object, _rpar) { return relation.transpile () + subject.transpile () + object.transpile ();},
 	UnaryRelation: function (relation, _lpar, subject, _rpar) { return relation.transpile () + " " + subject.transpile ();},
@@ -45,7 +45,12 @@ semantics.addOperation(
 	    return result;
 	},
 	MatchAtom: function (atom) { return atom.transpile (); },
+
 	Keyword: function (k) { return k.transpile (); },
+	kwCut: function (_) { return "cut ()"; },
+	kwTrue: function (_) { return "succeed ()"; },
+	kwFalse: function (_) { return "fail ()"; },
+
 	BinaryFunctor: function (id, _lpar, primary1, _comma, primary2, _rpar) { return  "functor2 (" + id.transpile() + ", " + primary1.transpile () + ", " + primary2.transpile () + ")";},
 	UnaryFunctor: function (id, _lpar, primary, _rpar) { return "functor1 (" + id.transpile() + ", " + primary.transpile () + ")";},
 	NonaryFunctor: function (id) { return "functor0 (" + id.transpile () + ")"; },
