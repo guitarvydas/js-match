@@ -4,8 +4,8 @@ function clearDB () { db = list (); };
 function pushDB (x) { db = cons (x, db); };
 function lvar (s) { return list ("?",s); };
 function fact0 (r) { pushDB (list (list (r))); }
-function fact1 (r,s) { pushDB (list (list (r,s))); }
-function fact2 (r,s,o) { pushDB (list (list (r,s,o))); }
+function fact1 (r,s) { pushDB (list (list (r, car(s)))); }
+function fact2 (r,s,o) { pushDB (list (list (r,car(s),car(o)))); }
 function rule (head, bod) {
     // make multiple rules, one for each body clause: cons(head,clause)
     // head is a Cons()
@@ -26,6 +26,9 @@ function cut () { return "!"; };
 function fail () { return "fail"; };
 ////
 function query (goal) {
+    console.log('goal:');
+    console.log(goal.toString());
+    console.log('end goal');
     prove6 (list (), goal, db, empty, 1, list (), db);
     var r = get_result ();
     return r;
