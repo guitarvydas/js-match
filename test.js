@@ -3,24 +3,28 @@
 	  fact1 ("some", "foo");
 	  fact1 ("some", "bar");
 	  fact1 ("some", "baz");
-          rule (list ("eq", lvar("X"), lvar ("X")), 
-		body (
-		    succeed ()
+          rule (head ("eq", lvar("X"), lvar ("X")), 
+		bodies (
+		    body ( succeed () )
 		));
-	  rule (list ("neq", lvar ("X"), lvar ("Y")),
-		body (
-		      list (
-			  list ("eq", lvar ("X"), lvar ("Y")), 
+	  rule (head ("neq", lvar ("X"), lvar ("Y")),
+		bodies (
+		      body (
+			  functor2 ("eq", lvar ("X"), lvar ("Y")), 
 			  cut (),
 			  fail ()
-		      ),
-		      succeed ()
+ 		      )
+		)
+		);
+	  rule (head ("neq", lvar ("X"), lvar ("Y")),
+		bodies (
+  		    body ( succeed () )
 		)
 	       );
 	  var result= query (
-	      list (
-		  list ("some", lvar ("X")), 
-		  list ("some", lvar ("Y")), 
-		  list ("neq", lvar ("X"), lvar ("Y"))
+	      goal (
+		  functor1 ("some", lvar ("X")), 
+		  functor1 ("some", lvar ("Y")), 
+		  functor2 ("neq", lvar ("X"), lvar ("Y"))
 	      ));
 
