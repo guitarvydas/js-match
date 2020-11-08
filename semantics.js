@@ -6,10 +6,10 @@ semantics.addOperation(
 	MatcherStatement: function (statements) { return statements.transpile ().join('\n'); },
 	Statement: function (statement, _period) { return statement.transpile (); },
 	
-	ClearStatement: function (_clear) { return "clear();";},
+	ClearStatement: function (_clear) { return "clearDB();";},
 	Rule: function (head, _eq, body) { return `rule (head (${head.transpile ()}), body (${body.transpile ()}));`;},
 	Fact: function (head) { return `fact1 (${head.transpile ()});` },
-	Query: function (_match, _lpar, expression, _rpar) { return `query (${expression.transpile ()});`;},
+	Query: function (_match, _lpar, expression, _rpar) { return `return query (goal (${expression.transpile ()}));`;},
 
 	BinaryRelation: function (relation, _lpar, subject, _comma, object, _rpar) { return relation.transpile () + subject.transpile () + object.transpile ();},
 	UnaryRelation: function (relation, _lpar, subject, _rpar) { return relation.transpile () + " " + subject.transpile ();},
@@ -52,7 +52,7 @@ semantics.addOperation(
 	Primary: function (primary) { return primary.transpile (); },
 	identifier: function (lc, cs) { return `"${lc.transpile () + cs.transpile ().join('')}"`; },
 	logicVariable: function (uc, cs) { 
-	    return 'lVar("' + uc.transpile () + cs.transpile ().join('') + '")'; 
+	    return 'lvar("' + uc.transpile () + cs.transpile ().join('') + '")'; 
 	},
 	lowerCaseLetter (c) { return c.transpile (); },
 	upperCaseLetter: function (c) { return c.transpile (); },
