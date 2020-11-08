@@ -26,7 +26,7 @@ function cut () { return "!"; };
 function fail () { return "fail"; };
 ////
 function query (goal) {
-    clear_result ();
+    clearDB ();
     prove6 (list (), goal, db, empty, 1, list (), db);
     var r = get_result ();
     return r;
