@@ -1,7 +1,7 @@
 clear;
-some(foo);
-some(bar);
-some(baz);
+line(a);
+line(b);
+line(c);
 eq(X,X) = succeed;
 neq(X,Y) = eq(X,Y) & cut & fail | succeed;
-query(some(X) & some(Y) & neq(X,Y));
+query(line(X) & line(Y) & neq(X,Y));

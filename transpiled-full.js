@@ -654,7 +654,10 @@ return final_result;
 var db = list ();
 
 function clearDB () { db = list (); };
+// facts can be pushed in any order (cons results in reverse order)
 function pushDB (x) { db = cons (x, db); };
+// rules must be kept in order, so we use the less-efficient Append instead of Cons
+function appendDB (x) { db = AppendInefficient (db, list(x)); };
 function lvar (s) { return list ("?",s); };
 function fact0 (r) { pushDB (list (list (r))); }
 function fact1 (r,s) { pushDB (list (list (r, car(s)))); }
@@ -665,7 +668,7 @@ function rule (head, bod) {
     // body is an array of Cons()
     var rle;
     rle = cons (head, bod);
-    pushDB (rle);
+    appendDB (rle);
     return "nil";
 };
 function lvar (letter) { return list ("?", letter); };
@@ -688,13 +691,13 @@ var goal = list;
 
       function execQuery () {
 clearDB();
-fact1 ("some", functor0 ("foo"));
-fact1 ("some", functor0 ("bar"));
-fact1 ("some", functor0 ("baz"));
+fact1 ("line", functor0 ("a"));
+fact1 ("line", functor0 ("b"));
+fact1 ("line", functor0 ("c"));
 rule (head ("eq", lvar("X"), lvar("X")), body ());
 rule (head ("neq", lvar("X"), lvar("Y")), body (functor2 ("eq", lvar("X"), lvar("Y")), cut (), fail ()));
 rule (head ("neq", lvar("X"), lvar("Y")), body ());
-var result = query (goal (functor1 ("some", lvar("X")), functor1 ("some", lvar("Y")), functor2 ("neq", lvar("X"), lvar("Y"))));
+var result = query (goal (functor1 ("line", lvar("X")), functor1 ("line", lvar("Y")), functor2 ("neq", lvar("X"), lvar("Y"))));
 	  return result;
       }
 console.log (execQuery().toString());

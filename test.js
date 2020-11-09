@@ -1,8 +1,8 @@
 // manually transpiled to JS
 	  clearDB ();
-fact1 ("some", functor0 ("foo"));
-fact1 ("some", functor0 ("bar"));
-fact1 ("some", functor0 ("baz"));
+fact1 ("some", functor0 ("a"));
+fact1 ("some", functor0 ("b"));
+fact1 ("some", functor0 ("c"));
           rule (head ("eq", lvar("X"), lvar ("X")), 
 		body ( )
 		);
