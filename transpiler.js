@@ -14,7 +14,7 @@ Matcher {
     Statement = (ClearStatement | Query | Rule | Fact) "."
     
     ClearStatement = "clear"
-    Rule = Head "=" Body
+    Rule = Head "=" (Body "|")* Body
     Fact = Head
     Query = "match" "(" MatchExpression ")"
 
@@ -33,13 +33,13 @@ Matcher {
     Body = MatchExpression
 
     Formal = BinaryFunctor | UnaryFunctor | NonaryFunctor | logicVariable | identifier
-    MatchExpression = (MatchFactor  "|")* MatchFactor
+    MatchExpression = MatchFactor
     MatchFactor = (MatchAtom "&")*  MatchAtom
     MatchAtom = Keyword | BinaryFunctor | UnaryFunctor | NonaryFunctor
-    Keyword = kwCut | kwTrue | kwFalse
+    Keyword = kwCut | kwSucceed | kwFail
     kwCut = "cut"
-    kwTrue = "true"
-    kwFalse = "false"
+    kwSucceed = "succeed"
+    kwFail = "fail"
     BinaryFunctor = identifier "(" Primary "," Primary ")"
     UnaryFunctor = identifier "(" Primary ")"
     NonaryFunctor = identifier
@@ -80,7 +80,17 @@ semantics.addOperation(
 	Statement: function (statement, _period) { return statement.transpile (); },
 	
 	ClearStatement: function (_clear) { return "clearDB();";},
-	Rule: function (head, _eq, body) { return `rule (head (${head.transpile ()}), body (${body.transpile ()}));`;},
+	Rule: function (head, _eq, bodies, _or, body) { 
+	    var tr_head = head.transpile ();
+	    if (bodies.children.length > 0) {
+		var result = "";
+		bodies.transpile ().forEach (orbody => {
+		    result = result + `rule (head (${tr_head}), body (${orbody}));\n`;
+		});
+		return `${result}rule (head (${tr_head}), body (${body.transpile ()}));`;
+	    } else {
+		return `rule (head (${tr_head}), body (${body.transpile ()}));`;
+	    }},
 	Fact: function (head) { return `fact1 (${head.transpile ()});` },
 	Query: function (_match, _lpar, expression, _rpar) { return `var result = query (goal (${expression.transpile ()}));`;},
 
@@ -99,14 +109,8 @@ semantics.addOperation(
 	Body: function (expression) { return expression.transpile ();},
 
 	Formal: function (f) { return f.transpile (); },
-	MatchExpression: function (orFactors, _or, factor) {
-	    var result;
-	    if (orFactors.children.length > 0) {
-		result += orFactors.transpile ().join (" | ") + ", " + factor.transpile ();
-	    } else {
-		result = factor.transpile ();
-	    }
-	    return result;
+	MatchExpression: function (factor) {
+	    return factor.transpile ();
 	},
 	MatchFactor: function (andAtoms, _and, atom) { 
 	    var result;
@@ -121,8 +125,8 @@ semantics.addOperation(
 
 	Keyword: function (k) { return k.transpile (); },
 	kwCut: function (_) { return "cut ()"; },
-	kwTrue: function (_) { return ""; },
-	kwFalse: function (_) { return "fail ()"; },
+	kwSucceed: function (_) { return ""; },
+	kwFail: function (_) { return "fail ()"; },
 
 	BinaryFunctor: function (id, _lpar, primary1, _comma, primary2, _rpar) { return  "functor2 (" + id.transpile() + ", " + primary1.transpile () + ", " + primary2.transpile () + ")";},
 	UnaryFunctor: function (id, _lpar, primary, _rpar) { return "functor1 (" + id.transpile() + ", " + primary.transpile () + ")";},

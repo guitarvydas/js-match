@@ -14,7 +14,7 @@ Matcher {
     Statement = (ClearStatement | Query | Rule | Fact) "."
     
     ClearStatement = "clear"
-    Rule = Head "=" Body
+    Rule = Head "=" (Body "|")* Body
     Fact = Head
     Query = "match" "(" MatchExpression ")"
 
@@ -33,13 +33,13 @@ Matcher {
     Body = MatchExpression
 
     Formal = BinaryFunctor | UnaryFunctor | NonaryFunctor | logicVariable | identifier
-    MatchExpression = (MatchFactor  "|")* MatchFactor
+    MatchExpression = MatchFactor
     MatchFactor = (MatchAtom "&")*  MatchAtom
     MatchAtom = Keyword | BinaryFunctor | UnaryFunctor | NonaryFunctor
-    Keyword = kwCut | kwTrue | kwFalse
+    Keyword = kwCut | kwSucceed | kwFail
     kwCut = "cut"
-    kwTrue = "true"
-    kwFalse = "false"
+    kwSucceed = "succeed"
+    kwFail = "fail"
     BinaryFunctor = identifier "(" Primary "," Primary ")"
     UnaryFunctor = identifier "(" Primary ")"
     NonaryFunctor = identifier

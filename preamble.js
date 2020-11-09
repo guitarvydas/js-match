@@ -11,13 +11,8 @@ function rule (head, bod) {
     // head is a Cons()
     // body is an array of Cons()
     var rle;
-    console.log ("rule ");
-    console.log (head.toString());
-    console.log (bod.toString());
     rle = cons (head, bod);
     pushDB (rle);
-    console.log ("end rule ");
-    console.log (rle.toString());
     return "nil";
 };
 function lvar (letter) { return list ("?", letter); };
@@ -26,9 +21,6 @@ function cut () { return "!"; };
 function fail () { return "fail"; };
 ////
 function query (goal) {
-    console.log('goal:');
-    console.log(goal.toString());
-    console.log('end goal');
     prove6 (list (), goal, db, empty, 1, list (), db);
     var r = get_result ();
     return r;
