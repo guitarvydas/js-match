@@ -18,11 +18,6 @@ Matcher {
     Fact = Head
     Query = "query" "(" MatchExpression ")"
 
-    BinaryRelation = Relation "(" Subject "," Object ")"
-    UnaryRelation = Relation "(" Subject ")"
-    NonaryRelation = Relation
-    Relation = identifier
-
     Subject = Primary
     Object = Primary
 

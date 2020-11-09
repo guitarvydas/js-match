@@ -18,11 +18,6 @@ Matcher {
     Fact = Head
     Query = "query" "(" MatchExpression ")"
 
-    BinaryRelation = Relation "(" Subject "," Object ")"
-    UnaryRelation = Relation "(" Subject ")"
-    NonaryRelation = Relation
-    Relation = identifier
-
     Subject = Primary
     Object = Primary
 
@@ -93,11 +88,6 @@ semantics.addOperation(
 	    }},
 	Fact: function (head) { return `fact1 (${head.transpile ()});` },
 	Query: function (_match, _lpar, expression, _rpar) { return `var result = query (goal (${expression.transpile ()}));`;},
-
-	BinaryRelation: function (relation, _lpar, subject, _comma, object, _rpar) { return relation.transpile () + subject.transpile () + object.transpile ();},
-	UnaryRelation: function (relation, _lpar, subject, _rpar) { return relation.transpile () + " " + subject.transpile ();},
-	NonaryRelation: function (relation) { return relation.transpile ();},
-	Relation: function (id) { return id.transpile (); },
 
 	Subject: function (primary) { return primary.transpile (); },
 	Object: function (primary) { return primary.transpile (); },

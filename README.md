@@ -89,9 +89,9 @@ eq(X,X) = succeed;
 neq(X,Y) = eq(X,Y) & cut & fail | succeed;
 query(some(X) & some(Y) & neq(X,Y));
 ** clear the database
-** create a fact, relation=some, subject=foo
-** create a fact, relation=some, subject=bar
-** create a fact, relation=some, subject=baz
+** create a fact, relation=some, subject=a
+** create a fact, relation=some, subject=b
+** create a fact, relation=some, subject=c
 ** create a Rule called "eq" that takes two logic variables.  If the logic variables
 **  are the same, then "eq" succeeds.  Two logic variables are the same if they have
 **  the same logic variable name.  In this case, the first logic variable is X and the
