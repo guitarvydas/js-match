@@ -4,7 +4,7 @@ semantics.addOperation(
     'transpile',
     {
 	MatcherStatement: function (statements) { return statements.transpile ().join('\n'); },
-	Statement: function (statement, _period) { return statement.transpile (); },
+	Statement: function (statement, _semicolon) { return statement.transpile (); },
 	
 	ClearStatement: function (_clear) { return "clearDB();";},
 	Rule: function (head, _eq, bodies, _or, body) { 

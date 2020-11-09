@@ -11,12 +11,12 @@ const ohm = require ('ohm-js')
 const matcherGrammar = `
 Matcher {
     MatcherStatement = Statement+
-    Statement = (ClearStatement | Query | Rule | Fact) "."
+    Statement = (ClearStatement | Query | Rule | Fact) ";"
     
     ClearStatement = "clear"
     Rule = Head "=" (Body "|")* Body
     Fact = Head
-    Query = "match" "(" MatchExpression ")"
+    Query = "query" "(" MatchExpression ")"
 
     BinaryRelation = Relation "(" Subject "," Object ")"
     UnaryRelation = Relation "(" Subject ")"

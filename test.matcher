@@ -1,7 +1,7 @@
-clear.
-some(foo).
-some(bar).
-some(baz).
-eq(X,X) = succeed.
-neq(X,Y) = eq(X,Y) & cut & fail | succeed.
-match(some(X) & some(Y) & neq(X,Y)).
+clear;
+some(foo);
+some(bar);
+some(baz);
+eq(X,X) = succeed;
+neq(X,Y) = eq(X,Y) & cut & fail | succeed;
+query(some(X) & some(Y) & neq(X,Y));
