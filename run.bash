@@ -1,7 +1,7 @@
 #!/bin/bash
 #!/bin/bash
 echo "*** Transpiling ***"
-## transpiler: test.matcher --> test2.js
+## transpiler: test.matcher --> tanspiled.js
 cat matcher.js semantics.js >transpiler.js
 node transpiler.js --input=test.matcher >transpiled.js
 
